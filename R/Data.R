@@ -1,12 +1,10 @@
-#' Adverse Event datasets
-#' 
 #' Findings About Clinical Event dataset
 #' 
 #' A Mock SDTM FACE dataset
 #' 
 #' @source fa_dummy.R
 #' 
-#' "admiralvaccine_face.rda"
+ "admiralvaccine_face.rda"
 #' 
 #' Clinical Event datasets
 #' 
@@ -14,13 +12,13 @@
 #' 
 #' @source ce_dummy.R
 #' 
-#' "admiralvaccine_ce.rda"
+   "admiralvaccine_ce.rda"
 #' 
 #' A Mock SDTM AE dataset
 #' 
 #' @source ae_dummy.R
 #' 
-#' "admiralvaccine_ae.rda"
+   "admiralvaccine_ae.rda"
 #' 
 #' Demography datasets
 #' 
@@ -28,7 +26,7 @@
 #' 
 #' @source dm_dummy.R
 #' 
-#' "admiralvaccine_dm.rda"
+   "admiralvaccine_dm.rda"
 #' 
 #' Exposure datasets
 #' 
@@ -36,7 +34,7 @@
 #' 
 #' @source ex_dummy.R
 #' 
-#' "admiralvaccine_ex.rda"
+   "admiralvaccine_ex.rda"
 #' 
 #' Vital signs datasets
 #' 
@@ -44,4 +42,4 @@
 #' 
 #' @source vs_dummy.R
 #' 
-#' "admiralvaccine_vs.rda"
+   "admiralvaccine_vs.rda"
