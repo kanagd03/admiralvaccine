@@ -54,25 +54,16 @@ lookup_dataset <- tribble(
 )
 
 input <- tribble(
-  ~USUBJID, ~FACAT, ~FASCAT, ~FATESTCD, ~FAOBJ, ~FATEST,
-  "ABC101", "REACTOGENICITY", "ADMINISTRATIVE SITE", "SEV", "Redness",
-  "Severity",
-  "ABC101", "REACTOGENICITY", "ADMINISTRATIVE SITE", "DIAMETER", "Redness",
-  "Diameter",
-  "ABC101", "REACTOGENICITY", "ADMINISTRATIVE SITE", "MAXDIAM", "Redness",
-  "Maximum Diameter",
-  "ABC101", "REACTOGENICITY", "SYSTEMIC", "MAXTEMP", "Fever",
-  "Maximum Temp",
-  "ABC101", "REACTOGENICITY", "SYSTEMIC", "OCCUR", "Fever",
-  "Occurrence",
-  "ABC101", "REACTOGENICITY", "ADMINISTRATIVE SITE", "OCCUR", "Erythema",
-  "Occurrence",
-  "ABC101", "REACTOGENICITY", "ADMINISTRATIVE SITE", "SEV", "Swelling",
-  "Severity",
-  "ABC101", "REACTOGENICITY", "ADMINISTRATIVE SITE", "OCCUR", "Swelling",
-  "Occurrence",
-  "ABC101", "REACTOGENICITY", "ADMINISTRATIVE SITE", "OCCUR", "Swelling",
-  "Occurrence"
+  ~USUBJID, ~FACAT, ~FASCAT, ~FATESTCD, ~FAOBJ, ~FATEST, ~FALOC, ~FALAT,
+  "ABC101", "REACTO", "ADMIN", "SEV", "Redness", "Severity", "ARM", "LEFT",
+  "ABC101", "REACTO", "ADMIN", "DIAMETER", "Redness", "Diameter", "ARM", "RIGHT",
+  "ABC101", "REACTO", "ADMIN", "MAXDIAM", "Redness", "Maximum Diameter", NA, NA,
+  "ABC101", "REACTO", "SYSTEMIC", "MAXTEMP", "Fever", "Maximum Temp", NA, NA,
+  "ABC101", "REACTO", "SYSTEMIC", "OCCUR", "Fever", "Occurrence", NA, NA,
+  "ABC101", "REACTO", "ADMIN", "OCCUR", "Erythema", "Occurrence", NA, NA,
+  "ABC101", "REACTO", "ADMIN", "SEV", "Swelling", "Severity", NA, NA,
+  "ABC101", "REACTO", "ADMIN", "OCCUR", "Swelling", "Occurrence", NA, NA,
+  "ABC101", "REACTO", "ADMIN", "OCCUR", "Swelling", "Occurrence", NA, NA
 )
 derive_vars_params(
   dataset = input,
