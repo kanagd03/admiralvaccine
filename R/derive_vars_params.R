@@ -48,25 +48,16 @@
 #' )
 #'
 #' input <- tribble(
-#'   ~USUBJID, ~FACAT, ~FASCAT, ~FATESTCD, ~FAOBJ, ~FATEST,
-#'   "ABC101", "REACTOGENICITY", "ADMINISTRATIVE SITE", "SEV", "Redness",
-#'   "Severity",
-#'   "ABC101", "REACTOGENICITY", "ADMINISTRATIVE SITE", "DIAMETER", "Redness",
-#'   "Diameter",
-#'   "ABC101", "REACTOGENICITY", "ADMINISTRATIVE SITE", "MAXDIAM", "Redness",
-#'   "Maximum Diameter",
-#'   "ABC101", "REACTOGENICITY", "SYSTEMIC", "MAXTEMP", "Fever",
-#'   "Maximum Temp",
-#'   "ABC101", "REACTOGENICITY", "SYSTEMIC", "OCCUR", "Fever",
-#'   "Occurrence",
-#'   "ABC101", "REACTOGENICITY", "ADMINISTRATIVE SITE", "OCCUR", "Erythema",
-#'   "Occurrence",
-#'   "ABC101", "REACTOGENICITY", "ADMINISTRATIVE SITE", "SEV", "Swelling",
-#'   "Severity",
-#'   "ABC101", "REACTOGENICITY", "ADMINISTRATIVE SITE", "OCCUR", "Swelling",
-#'   "Occurrence",
-#'   "ABC101", "REACTOGENICITY", "ADMINISTRATIVE SITE", "OCCUR", "Swelling",
-#'   "Occurrence"
+#' ~USUBJID,  ~FACAT, ~FASCAT, ~FATESTCD,  ~FAOBJ, ~FATEST,~FALOC, ~FALAT,
+#'"ABC101","REACTO","ADMIN", "SEV",     "Redness", "Severity","ARM","LEFT",           
+#'"ABC101","REACTO","ADMIN", "DIAMETER","Redness", "Diameter","ARM","RIGHT",           
+#'"ABC101","REACTO","ADMIN", "MAXDIAM", "Redness", "Maximum Diameter",NA,NA, 
+#'"ABC101","REACTO","SYSTEMIC", "MAXTEMP", "Fever",  "Maximum Temp",NA,NA,
+#'"ABC101","REACTO","SYSTEMIC", "OCCUR", "Fever","Occurrence",NA,NA,
+#'"ABC101","REACTO","ADMIN", "OCCUR", "Erythema","Occurrence",NA,NA,
+#'"ABC101","REACTO","ADMIN", "SEV",   "Swelling","Severity",NA,NA,            
+#'"ABC101","REACTO","ADMIN", "OCCUR", "Swelling","Occurrence",NA,NA,
+#'"ABC101","REACTO","ADMIN", "OCCUR", "Swelling", "Occurrence",NA,NA
 #' )
 #' derive_vars_params(
 #'   dataset = input,
@@ -84,36 +75,22 @@ derive_vars_params <- function(dataset,
     dataset_add = lookup_dataset,
     new_vars = vars(PARAMCD),
     by_vars = vars(FATESTCD, FAOBJ)
-  )
+  ) %>%
+    convert_blanks_to_na()
 
   # Checking if permissible variable exisits in dataset
-  eFASTRESU <- "FASTRESU" %in% colnames(adface)
-  eFALOC <- "FALOC" %in% colnames(adface)
-  eFADIR <- "FADIR" %in% colnames(adface)
-  eFALAT <- "FALAT" %in% colnames(adface)
+  lookup <-
+    c("FASTRESU","FALOC","FADIR","FALAT")
 
   # Assigning PARCAT1 PARCAT2 & PARAM
   adface <- adface %>%
-    convert_na_to_blanks() %>%
     mutate(
       PARCAT1 = FACAT,
       PARCAT2 = FASCAT,
-      PARAM = str_to_sentence(paste(FAOBJ, FATEST,
-        if (eFASTRESU == "TRUE") {
-          FASTRESU
-        },
-        if (eFALOC == "TRUE") {
-          FALOC
-        },
-        if (eFADIR == "TRUE") {
-          FADIR
-        },
-        if (eFALAT == "TRUE") {
-          FALAT
-        },
-        sep = " "
-      ))
-    )
+      PARAM = "") %>%
+   unite(PARAM,FAOBJ,FATEST,any_of(lookup), sep = " ",
+         na.rm = TRUE, remove = FALSE) %>%
+    mutate(PARAM = str_to_sentence(PARAM))
 
   # Assigning PARAMN
   paramn <- adface %>%
