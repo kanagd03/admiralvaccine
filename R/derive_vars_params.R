@@ -49,13 +49,13 @@
 #'
 #' input <- tribble(
 #' ~USUBJID,  ~FACAT, ~FASCAT, ~FATESTCD,  ~FAOBJ, ~FATEST,~FALOC, ~FALAT,
-#'"ABC101","REACTO","ADMIN", "SEV",     "Redness", "Severity","ARM","LEFT",           
-#'"ABC101","REACTO","ADMIN", "DIAMETER","Redness", "Diameter","ARM","RIGHT",           
-#'"ABC101","REACTO","ADMIN", "MAXDIAM", "Redness", "Maximum Diameter",NA,NA, 
+#'"ABC101","REACTO","ADMIN", "SEV",     "Redness", "Severity","ARM","LEFT",
+#'"ABC101","REACTO","ADMIN", "DIAMETER","Redness", "Diameter","ARM","RIGHT",
+#'"ABC101","REACTO","ADMIN", "MAXDIAM", "Redness", "Maximum Diameter",NA,NA,
 #'"ABC101","REACTO","SYSTEMIC", "MAXTEMP", "Fever",  "Maximum Temp",NA,NA,
 #'"ABC101","REACTO","SYSTEMIC", "OCCUR", "Fever","Occurrence",NA,NA,
 #'"ABC101","REACTO","ADMIN", "OCCUR", "Erythema","Occurrence",NA,NA,
-#'"ABC101","REACTO","ADMIN", "SEV",   "Swelling","Severity",NA,NA,            
+#'"ABC101","REACTO","ADMIN", "SEV",   "Swelling","Severity",NA,NA,
 #'"ABC101","REACTO","ADMIN", "OCCUR", "Swelling","Occurrence",NA,NA,
 #'"ABC101","REACTO","ADMIN", "OCCUR", "Swelling", "Occurrence",NA,NA
 #' )
@@ -67,14 +67,14 @@
 derive_vars_params <- function(dataset,
                                lookup_dataset) {
   assert_data_frame(dataset,
-    required_vars = vars(USUBJID, FAOBJ)
+    required_vars = exprs(USUBJID, FAOBJ)
   )
   # Merging lookup file to get PARAMCD values
   adface <- derive_vars_merged(
     dataset,
     dataset_add = lookup_dataset,
-    new_vars = vars(PARAMCD),
-    by_vars = vars(FATESTCD, FAOBJ)
+    new_vars = exprs(PARAMCD),
+    by_vars = exprs(FATESTCD, FAOBJ)
   ) %>%
     convert_blanks_to_na()
 
