@@ -26,7 +26,7 @@ testthat::test_that('testcase-1 : checking whether its handling the NA values
 
                       actual_output <-derive_vars_event_flag(
                         dataset = input,
-                        by_vars = vars(USUBJID,FAOBJ,ATPTREF),
+                        by_vars = exprs(USUBJID,FAOBJ,ATPTREF),
                         aval_cutoff = 2.0,
                         new_var1 = EVENTL,
                         new_var2 = EVENTDL)
@@ -83,7 +83,7 @@ testthat::test_that('test case - 2: Checking whether its creating the user input
 
                       actual_output <- derive_vars_event_flag(
                         dataset = input,
-                        by_vars = vars(USUBJID,FAOBJ,ATPTREF),
+                        by_vars = exprs(USUBJID,FAOBJ,ATPTREF),
                         aval_cutoff = 2.0,
                         new_var1 = EFL,
                         new_var2 = EDFL)
