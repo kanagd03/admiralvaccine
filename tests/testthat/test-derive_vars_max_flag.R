@@ -68,7 +68,7 @@ test_that("derive maximum severity flag variable per event",{
     mutate(temp = row_number()) %>%
     mutate(flag1=if_else(temp == 1,"Y",NA_character_)) %>%
     arrange(FAOBJ,FATESTCD) %>%
-    select(-(temp))
+    select(-(temp)) %>% rename("ANL01FL"=flag1)
 
 
   actual_output <-derive_vars_max_flag(
@@ -116,7 +116,7 @@ in the dataset",{
 
   actual_output <-derive_vars_max_flag(
     dataset = input,
-    flag1=NULL,
+    flag1= NULL,
     flag2 = "ANL02FL")
 
   expect_dfs_equal(
