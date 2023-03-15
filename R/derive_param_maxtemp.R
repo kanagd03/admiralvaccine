@@ -18,10 +18,10 @@
 #'
 #' @param by_vars Grouping variables
 #'
-#' *Default: vars(USUBJID,FAOBJ,ATPTREF)*
+#' *Default: exprs(USUBJID,FAOBJ,ATPTREF)*
 #' *Permitted Value: A Character vector*
 #'
-#'  Pass the `by_vars` in `vars()` based on the by_vars variables the maximum
+#'  Pass the `by_vars` in `exprs()` based on the by_vars variables the maximum
 #'  temperature will be derived from `VSSTRESN`.
 #'
 #' @param test_maxtemp Value for `FATEST`
@@ -99,7 +99,7 @@ derive_param_maxtemp <- function(
     testcd_maxtemp = "MAXTEMP") {
   # assertion
 
-  assert_data_frame(dataset, required_vars = vars(
+  assert_data_frame(dataset, required_vars = exprs(
     USUBJID, FAOBJ, VSSTRESN,
     FATEST, FATESTCD, ATPTREF
   ))
