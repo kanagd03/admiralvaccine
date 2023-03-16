@@ -61,50 +61,59 @@
 #' library(dplyr)
 #' library(rlang)
 #'
-#' input<-tribble(
-#'   ~USUBJID,~FAOBJ,~ATPTREF,~AVAL,~AVALC,~FATEST, ~FATESTCD, ~FASCAT,
-#'   "1","REDNESS","VAC1",3.5,"3.5","Diameter","DIAMETER","ADMIN-SITE",
-#'   "1","REDNESS","VAC1",4.5,"4.5","Diameter","DIAMETER","ADMIN-SITE",
-#'   "1","REDNESS","VAC1",1.5,"3.5","Diameter","DIAMETER","ADMIN-SITE",
-#'   "1","FATIGUE","VAC1",1,"MILD","Severity","SEV","SYSTEMIC",
-#'   "1","FATIGUE","VAC1",2,"MODERATE","Severity","SEV","SYSTEMIC",
-#'   "1","FATIGUE","VAC1",0,"NONE","Severity","SEV","SYSTEMIC",
-#'   "1","REDNESS","VAC2",3.5,"3.5","Diameter","DIAMETER","ADMIN-SITE",
-#'   "1","REDNESS","VAC2",4.5,"4.5","Diameter","DIAMETER","ADMIN-SITE",
-#'   "1","REDNESS","VAC2",1.5,"3.5","Diameter","DIAMETER","ADMIN-SITE",
-#'   "1","FATIGUE","VAC2",1,"MILD","Severity","SEV","SYSTEMIC",
-#'   "1","FATIGUE","VAC2",2,"MODERATE","Severity","SEV","SYSTEMIC",
-#'   "1","FATIGUE","VAC2",0,"NONE","Severity","SEV","SYSTEMIC"
+#' input <- tribble(
+#'   ~USUBJID, ~FAOBJ, ~ATPTREF, ~AVAL, ~AVALC, ~FATEST, ~FATESTCD, ~FASCAT,
+#'   "1", "REDNESS", "VAC1", 3.5, "3.5", "Diameter", "DIAMETER", "ADMIN-SITE",
+#'   "1", "REDNESS", "VAC1", 4.5, "4.5", "Diameter", "DIAMETER", "ADMIN-SITE",
+#'   "1", "REDNESS", "VAC1", 1.5, "3.5", "Diameter", "DIAMETER", "ADMIN-SITE",
+#'   "1", "FATIGUE", "VAC1", 1, "MILD", "Severity", "SEV", "SYSTEMIC",
+#'   "1", "FATIGUE", "VAC1", 2, "MODERATE", "Severity", "SEV", "SYSTEMIC",
+#'   "1", "FATIGUE", "VAC1", 0, "NONE", "Severity", "SEV", "SYSTEMIC",
+#'   "1", "REDNESS", "VAC2", 3.5, "3.5", "Diameter", "DIAMETER", "ADMIN-SITE",
+#'   "1", "REDNESS", "VAC2", 4.5, "4.5", "Diameter", "DIAMETER", "ADMIN-SITE",
+#'   "1", "REDNESS", "VAC2", 1.5, "3.5", "Diameter", "DIAMETER", "ADMIN-SITE",
+#'   "1", "FATIGUE", "VAC2", 1, "MILD", "Severity", "SEV", "SYSTEMIC",
+#'   "1", "FATIGUE", "VAC2", 2, "MODERATE", "Severity", "SEV", "SYSTEMIC",
+#'   "1", "FATIGUE", "VAC2", 0, "NONE", "Severity", "SEV", "SYSTEMIC"
 #' )
 #'
 #' derive_vars_event_flag(
-#'   dataset = adface1,
-#'   by_vars = exprs(USUBJID,FAOBJ,ATPTREF),
+#'   dataset = input,
+#'   by_vars = exprs(USUBJID, FAOBJ, ATPTREF),
 #'   aval_cutoff = 2.5,
 #'   new_var1 = EVENTL,
-#'   new_var2 = EVENTDL)
-
+#'   new_var2 = EVENTDL
+#' )
+#'
 derive_vars_event_flag <- function(dataset,
                                    by_vars,
                                    aval_cutoff,
-                                   new_var1,
-                                   new_var2
-){
-
+                                   new_var1 = NULL,
+                                   new_var2 = NULL) {
   # assertion check
   assert_data_frame(dataset, required_vars = by_vars)
-  assert_vars(by_vars)
-  new_var1 <- assert_symbol(enquo(new_var1))
-  new_var2 <- assert_symbol(enquo(new_var2))
+  new_var1 <- assert_symbol(enexpr(new_var1), optional = TRUE)
+  new_var2 <- assert_symbol(enexpr(new_var2), optional = TRUE)
   assert_numeric_vector(aval_cutoff)
 
-  # derive flag variables
-  dataset %>%
-    group_by(!!!by_vars) %>%
-    mutate(!!new_var1 := ifelse(any(!(is.na(AVAL)) & AVAL > aval_cutoff | AVALC %in% c('Y','MILD','MODERATE','SEVERE')),"Y","N" )) %>%
-    ungroup() %>%
-    mutate(!!new_var2 := ifelse(!(is.na(AVAL)) & AVAL > aval_cutoff | AVALC %in% c('Y','MILD','MODERATE','SEVERE'),"Y","N"))
-
+  if (!is.null(new_var1) & is.null(new_var2)) {
+    dataset %>%
+      group_by(!!!by_vars) %>%
+      mutate(!!new_var1 := ifelse(any(!(is.na(AVAL)) &
+        AVAL > aval_cutoff | AVALC %in% c("Y", "MILD", "MODERATE", "SEVERE")), "Y", "N"))
+  } else if (is.null(new_var1) & !is.null(new_var2)) {
+    dataset %>%
+      mutate(!!new_var2 := ifelse(!(is.na(AVAL)) &
+        AVAL > aval_cutoff | AVALC %in% c("Y", "MILD", "MODERATE", "SEVERE"), "Y", "N"))
+  } else if (!is.null(new_var1) & !is.null(new_var2)) {
+    dataset %>%
+      group_by(!!!by_vars) %>%
+      mutate(!!new_var1 := ifelse(any(!(is.na(AVAL)) &
+        AVAL > aval_cutoff | AVALC %in% c("Y", "MILD", "MODERATE", "SEVERE")), "Y", "N")) %>%
+      ungroup() %>%
+      mutate(!!new_var2 := ifelse(!(is.na(AVAL)) &
+        AVAL > aval_cutoff | AVALC %in% c("Y", "MILD", "MODERATE", "SEVERE"), "Y", "N"))
+  } else {
+    dataset <- dataset
+  }
 }
-
-
