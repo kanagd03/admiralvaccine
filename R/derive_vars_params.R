@@ -48,16 +48,16 @@
 #' )
 #'
 #' input <- tribble(
-#' ~USUBJID,  ~FACAT, ~FASCAT, ~FATESTCD,  ~FAOBJ, ~FATEST,~FALOC, ~FALAT,
-#'"ABC101","REACTO","ADMIN", "SEV",     "Redness", "Severity","ARM","LEFT",
-#'"ABC101","REACTO","ADMIN", "DIAMETER","Redness", "Diameter","ARM","RIGHT",
-#'"ABC101","REACTO","ADMIN", "MAXDIAM", "Redness", "Maximum Diameter",NA,NA,
-#'"ABC101","REACTO","SYSTEMIC", "MAXTEMP", "Fever",  "Maximum Temp",NA,NA,
-#'"ABC101","REACTO","SYSTEMIC", "OCCUR", "Fever","Occurrence",NA,NA,
-#'"ABC101","REACTO","ADMIN", "OCCUR", "Erythema","Occurrence",NA,NA,
-#'"ABC101","REACTO","ADMIN", "SEV",   "Swelling","Severity",NA,NA,
-#'"ABC101","REACTO","ADMIN", "OCCUR", "Swelling","Occurrence",NA,NA,
-#'"ABC101","REACTO","ADMIN", "OCCUR", "Swelling", "Occurrence",NA,NA
+#'   ~USUBJID, ~FACAT, ~FASCAT, ~FATESTCD, ~FAOBJ, ~FATEST, ~FALOC, ~FALAT,
+#'   "ABC101", "REACTO", "ADMIN", "SEV", "Redness", "Severity", "ARM", "LEFT",
+#'   "ABC101", "REACTO", "ADMIN", "DIAMETER", "Redness", "Diameter", "ARM", "RIGHT",
+#'   "ABC101", "REACTO", "ADMIN", "MAXDIAM", "Redness", "Maximum Diameter", NA, NA,
+#'   "ABC101", "REACTO", "SYSTEMIC", "MAXTEMP", "Fever", "Maximum Temp", NA, NA,
+#'   "ABC101", "REACTO", "SYSTEMIC", "OCCUR", "Fever", "Occurrence", NA, NA,
+#'   "ABC101", "REACTO", "ADMIN", "OCCUR", "Erythema", "Occurrence", NA, NA,
+#'   "ABC101", "REACTO", "ADMIN", "SEV", "Swelling", "Severity", NA, NA,
+#'   "ABC101", "REACTO", "ADMIN", "OCCUR", "Swelling", "Occurrence", NA, NA,
+#'   "ABC101", "REACTO", "ADMIN", "OCCUR", "Swelling", "Occurrence", NA, NA
 #' )
 #' derive_vars_params(
 #'   dataset = input,
@@ -80,16 +80,19 @@ derive_vars_params <- function(dataset,
 
   # Checking if permissible variable exisits in dataset
   lookup <-
-    c("FASTRESU","FALOC","FADIR","FALAT")
+    c("FASTRESU", "FALOC", "FADIR", "FALAT")
 
   # Assigning PARCAT1 PARCAT2 & PARAM
   adface <- adface %>%
     mutate(
       PARCAT1 = FACAT,
       PARCAT2 = FASCAT,
-      PARAM = "") %>%
-   unite(PARAM,FAOBJ,FATEST,any_of(lookup), sep = " ",
-         na.rm = TRUE, remove = FALSE) %>%
+      PARAM = ""
+    ) %>%
+    unite(PARAM, FAOBJ, FATEST, any_of(lookup),
+      sep = " ",
+      na.rm = TRUE, remove = FALSE
+    ) %>%
     mutate(PARAM = str_to_sentence(PARAM))
 
   # Assigning PARAMN
