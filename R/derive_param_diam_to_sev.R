@@ -171,8 +171,8 @@ derive_param_diam_to_sev <- function(dataset = NULL,
     fil_rec <- diam
   }
 
- #check if AVALC is a character vector
-  if(class(fil_rec$AVALC) != "character"){
+  # check if AVALC is a character vector
+  if (class(fil_rec$AVALC) != "character") {
     stop(
       paste0("AVALC must be a character vector")
     )
@@ -213,6 +213,6 @@ derive_param_diam_to_sev <- function(dataset = NULL,
   } else {
     stop(
       paste0(filter_diam, " ", "doesn't exist in the filtered record")
-      )
+    )
   }
 }
