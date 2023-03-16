@@ -18,10 +18,10 @@
 #'
 #' @param by_vars Grouping variables
 #'
-#' *Default: exprs(USUBJID,FAOBJ,ATPTREF)*
+#' *Default: vars(USUBJID,FAOBJ,ATPTREF)*
 #' *Permitted Value: A Character vector*
 #'
-#'  Pass the `by_vars` in `exprs()` based on the by_vars variables the maximum
+#'  Pass the `by_vars` in `vars()` based on the by_vars variables the maximum
 #'  temperature will be derived from `VSSTRESN`.
 #'
 #' @param test_maxtemp Value for `FATEST`
@@ -91,12 +91,11 @@
 #'   by_vars = exprs(USUBJID, FAOBJ, ATPTREF)
 #' )
 #'
-derive_param_maxtemp <- function(
-    dataset = NULL,
-    filter_faobj = "FEVER",
-    by_vars = exprs(USUBJID, FAOBJ, ATPTREF),
-    test_maxtemp = "Maximum temperatue",
-    testcd_maxtemp = "MAXTEMP") {
+derive_param_maxtemp <- function(dataset = NULL,
+                                 filter_faobj = "FEVER",
+                                 by_vars = exprs(USUBJID, FAOBJ, ATPTREF),
+                                 test_maxtemp = "Maximum temperatue",
+                                 testcd_maxtemp = "MAXTEMP") {
   # assertion
 
   assert_data_frame(dataset, required_vars = exprs(
@@ -115,6 +114,7 @@ derive_param_maxtemp <- function(
     "FACAT"
   )
 
+
   # Deriving maximum temperature
   if (filter_faobj %in% dataset$FAOBJ) {
     max_temp <- dataset %>%
@@ -129,13 +129,13 @@ derive_param_maxtemp <- function(
         FATESTCD = testcd_maxtemp
       ) %>%
       select(any_of(retain_vars)) %>%
-      distinct(USUBJID, AVAL, ATPTREF, .keep_all = TRUE) %>%
-      # binding with input data set
+      distinct(USUBJID, AVAL, ATPTREF, .keep_all = TRUE)
+    # binding with input data set
 
-      bind_rows(dataset)
-
-    return(as.data.frame(max_temp))
+    bind_rows(dataset, max_temp)
   } else {
-    stop(paste(filter_faobj, "doesn't exist in the FAOBJ variable.", sep = " "))
+    stop(
+      paste0(filter_faobj, " ", "doesn't exist in the FAOBJ variable.")
+    )
   }
 }
