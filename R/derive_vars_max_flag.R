@@ -19,6 +19,8 @@
 #'
 #' @details This utility flags the maximum record per subject per event
 #'          per vaccination/Overall
+#'          If both parameters `flag1` & `flag2` are passed as NULL then
+#'          utility will throw error and flags will not be created.
 #'
 #' @export
 #'
@@ -34,85 +36,89 @@
 #' library(tibble)
 #' input <- tribble(
 #'   ~USUBJID, ~FAOBJ, ~FATESTCD, ~FATPTREF, ~AVAL, ~FADTC, ~PARAMCD,
-#'   "ABC101", "REDNESS", "DIAMETER", "VACC 1", 10,  "2015-01-10", "DIARE",
+#'   "ABC101", "REDNESS", "DIAMETER", "VACC 1", 10, "2015-01-10", "DIARE",
 #'   "ABC101", "REDNESS", "DIAMETER", "VACC 1", 7, "2015-01-11", "DIARE",
 #'   "ABC101", "REDNESS", "DIAMETER", "VACC 2", 3, "2015-02-10", "DIARE",
 #'   "ABC101", "REDNESS", "DIAMETER", "VACC 2", 8, "2015-02-11", "DIARE",
-#'   "ABC101", "FATIQUE", "SEV", "VACC 1", 1,  "2015-01-10", "SEVFAT",
+#'   "ABC101", "FATIQUE", "SEV", "VACC 1", 1, "2015-01-10", "SEVFAT",
 #'   "ABC101", "FATIQUE", "SEV", "VACC 1", 1, "2015-01-11", "SEVFAT",
 #'   "ABC101", "FATIQUE", "SEV", "VACC 2", 2, "2015-02-10", "SEVFAT",
-#'   "ABC101", "FATIQUE", "SEV", "VACC 2", 3, "2015-02-11", "SEVFAT")
+#'   "ABC101", "FATIQUE", "SEV", "VACC 2", 3, "2015-02-11", "SEVFAT"
+#' )
 #'
-#' derive_vars_max_flag(dataset = input,
-#'                      flag1 = "ANL01FL",
-#'                      flag2 = "ANL02FL")
-#' derive_vars_max_flag(dataset = input,
-#'                      flag1 = NULL,
-#'                      flag2 = "ANL02FL")
-#' derive_vars_max_flag(dataset = input,
-#'                      flag1 = "ANL01FL",
-#'                      flag2 = NULL)
-
+#' derive_vars_max_flag(
+#'   dataset = input,
+#'   flag1 = "ANL01FL",
+#'   flag2 = "ANL02FL"
+#' )
+#' derive_vars_max_flag(
+#'   dataset = input,
+#'   flag1 = NULL,
+#'   flag2 = "ANL02FL"
+#' )
+#' derive_vars_max_flag(
+#'   dataset = input,
+#'   flag1 = "ANL01FL",
+#'   flag2 = NULL
+#' )
+#'
 derive_vars_max_flag <- function(dataset,
-                                 flag1,
-                                 flag2){
-
-  assert_data_frame(dataset,
-                    required_vars = exprs(USUBJID, FAOBJ))
-
-  # Getting distinct PARAMCD values except for "OCCUR"
-  param <-dataset %>%
-    filter(!is.na(PARAMCD) & FATESTCD != "OCCUR") %>%
-    distinct(PARAMCD)
-
-  paramcd <- as.list(param)
-
+                                 flag1 = "ANL01FL",
+                                 flag2 = "ANL02FL") {
   # Flagging maximum record per subject per event per Vaccination
-  if (!is.null(flag1)){
-    for (value in paramcd){
-      dataset <- restrict_derivation(
-        dataset,
-        derivation = derive_var_worst_flag,
-        args = params(
-          by_vars = exprs(USUBJID,FAOBJ,FATPTREF),
-          order = exprs(FADTC),
-          new_var = new_var_1,
-          param_var = PARAMCD,
-          analysis_var = AVAL,
-          worst_high = value,
-          worst_low = character(0)
-        ),
-        filter = !is.na(AVAL)
-      ) %>%
-        rename(!!flag1 := "new_var_1")
-    }
+  assert_data_frame(dataset,
+    required_vars = exprs(USUBJID, FAOBJ)
+  )
+  if (is.null(flag1) & is.null(flag2)) {
+    stop("Please mention flag name")
   }
 
+  flag <- function(dataset,
+                   by_vars,
+                   by_join,
+                   fl) {
+    temp <- dataset %>%
+      filter(!is.na(AVAL)) %>%
+      group_by(!!!by_vars) %>%
+      arrange(desc(AVAL), FADTC, .by_group = TRUE) %>%
+      summarise(FADTC = first(FADTC)) %>%
+      mutate(!!fl := "Y") %>%
+      ungroup()
+
+    dataset <- left_join(
+      x = dataset,
+      y = temp,
+      by = by_join,
+      keep = FALSE
+    )
+  }
+
+  if (!is.null(flag1) & !is.null(flag2)) {
+    dataset <- flag(dataset,
+      by_vars = exprs(USUBJID, FAOBJ, FATPTREF, PARAMCD),
+      by_join = c("USUBJID", "FAOBJ", "FATPTREF", "PARAMCD", "FADTC"),
+      fl = flag1
+    )
+    dataset <- flag(dataset,
+      by_vars = exprs(USUBJID, FAOBJ, PARAMCD),
+      by_join = c("USUBJID", "FAOBJ", "PARAMCD", "FADTC"),
+      fl = flag2
+    )
+  } else if (!is.null(flag1)) {
+    dataset <- flag(dataset,
+      by_vars = exprs(USUBJID, FAOBJ, FATPTREF, PARAMCD),
+      by_join = c("USUBJID", "FAOBJ", "FATPTREF", "PARAMCD", "FADTC"),
+      fl = flag1
+    )
+  } else
   # Flagging maximum record per subject per event for Overall
-  if (!is.null(flag2)){
-    for (value in paramcd){
-      dataset <- restrict_derivation(
-        dataset,
-        derivation = derive_var_worst_flag,
-        args = params(
-          by_vars = exprs(USUBJID,FAOBJ),
-          order = exprs(FADTC),
-          new_var = new_var_2,
-          param_var = PARAMCD,
-          analysis_var = AVAL,
-          worst_high = value,
-          worst_low = character(0)
-        ),
-        filter = !is.na(AVAL)
-      )%>%
-        rename(!!flag2 := "new_var_2")
-    }
-
+  if (!is.null(flag2)) {
+    dataset <- flag(dataset,
+      by_vars = exprs(USUBJID, FAOBJ, PARAMCD),
+      by_join = c("USUBJID", "FAOBJ", "PARAMCD", "FADTC"),
+      fl = flag2
+    )
   }
-
-
-  return(dataset)
 }
 
 # ________________________END OF THE FUNCTION___________________________________
-
