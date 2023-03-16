@@ -7,10 +7,8 @@ library(tidyverse)
 library(dplyr)
 library(lubridate)
 
-
-
 # testthat
-testthat::test_that('Getting Vaccination dates from EX and check if output is
+testthat::test_that('testcase-1: Getting Vaccination dates from EX and check if output is
                     merged with ADSL',{
                       input<-tribble(
                         ~USUBJID, ~EXSTDTC, ~VISITNUM, ~EXTRT, ~EXLNKGRP,~VISIT,
@@ -54,17 +52,16 @@ testthat::test_that('Getting Vaccination dates from EX and check if output is
                       # Actual Output
                       actual <- derive_vars_vaxdt(
                         dataset = input,
+                        dataset_adsl = adsl,
                         by_vars = exprs(USUBJID,VISITNUM),
                         order = exprs(USUBJID,VISITNUM,VISIT,EXSTDTC)
                       )
                       expect_dfs_equal(actual, expected, keys = c('USUBJID'))
-                    }
-
-)
+                    })
 
 
 # testthat
-testthat::test_that('Check if Vaccination date variables are getting created when multiple
+testthat::test_that('testcase-2: Check if Vaccination date variables are getting created when multiple
                     vaccination given on same visit',{
 
                       input<-tribble(
@@ -109,11 +106,10 @@ testthat::test_that('Check if Vaccination date variables are getting created whe
                       # Actual Output
                       actual <- derive_vars_vaxdt(
                         dataset = input,
+                        dataset_adsl = adsl,
                         by_vars = exprs(USUBJID,VISITNUM),
                         order = exprs(USUBJID,VISITNUM,VISIT,EXSTDTC)
                       )
                       expect_dfs_equal(actual, expected, keys = c('USUBJID'))
-                    }
-
-)
+                    })
 
