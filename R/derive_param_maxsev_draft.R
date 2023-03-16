@@ -130,10 +130,10 @@ derive_param_maxsev <- function(dataset = NULL,
                                 by_vars = exprs(USUBJID, FAOBJ, ATPTREF)) {
   # assertions
   assert_data_frame(dataset,
-                    required_vars = exprs(
-                      USUBJID, FASCAT, AVALC, FAOBJ,
-                      ATPTREF, FATEST, FATESTCD
-                    )
+    required_vars = exprs(
+      USUBJID, FASCAT, AVALC, FAOBJ,
+      ATPTREF, FATEST, FATESTCD
+    )
   )
   assert_character_scalar(filter_sev, optional = FALSE)
   assert_character_vector(exclude_events, optional = TRUE)
@@ -144,7 +144,7 @@ derive_param_maxsev <- function(dataset = NULL,
   if (filter_sev %in% dataset$FATESTCD) {
     maxsev_pp <- dataset %>%
       filter(FATESTCD == filter_sev &
-               grepl("ADMIN|SYS", FASCAT)) %>%
+        grepl("ADMIN|SYS", FASCAT)) %>%
       # AVAL creation for severity records
       mutate(AVAL = case_when(
         AVALC == "NONE" ~ 0,
