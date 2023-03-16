@@ -153,11 +153,11 @@ testthat::test_that("derive_param_maxsev Test 3: Checking whether the
     slice_tail(n = 1) %>%
     filter(FATESTCD == "SEV" & FAOBJ != "CHILLS") %>%
     mutate(DTYPE = "MAXIMUM", FATESTCD = "MAXSEV", FATEST = "Maximum severity")
-  # expected dataset
+  # expected_dataset
   expected <- bind_rows(input %>% mutate(AVAL = format_aval(AVALC)), expected1)
 
 
-  # actual dataset
+  # actual_dataset
   actual <- derive_param_maxsev(
     dataset = input,
     filter_sev = "SEV",
@@ -167,7 +167,7 @@ testthat::test_that("derive_param_maxsev Test 3: Checking whether the
     by_vars = exprs(USUBJID, FAOBJ, ATPTREF)
   )
 
-  # testthat
+  # test_that
   expect_dfs_equal(actual,
     expected,
     keys = c(
