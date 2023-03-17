@@ -2,7 +2,7 @@
 #'
 #' @description
 #' To derive the severity records from the diameter records per subject per
-#' event per period.
+#' event per vaccination.
 #'
 #' @param dataset Input data set
 #'
@@ -88,11 +88,11 @@
 #' can skip this function to keep the SDTM level severity records for further
 #'  derivation.
 #' 3. If User want to derive the severity records from the diameter records even
-#'  that data set has severity records for Redness and swelling. This function
-#'  will remove the existing severity records and it will create the new
-#'  severity records as`AVALC` which is derived from diameter. and `AVAL` will
-#'  be derived as numeric severity grade to get the maximum severity records
-#'  which will be derived by `derive_param_maxsev.R`.
+#' if SDTM data set has severity records for Redness and swelling then this 
+#' function will remove the existing severity records and it will create new
+#' severity record which is derived from diameter. `AVAL` will
+#' be derived as numeric severity grade to get the maximum severity records
+#' which will be derived by `derive_param_maxsev.R`.
 #' 4. Pass the values in severity grade arguments(`none`, `mild`, `mod`, `sev`)
 #'  as per the study needs.
 #' 5.User can pass the events which has diameter values to derive their severity
@@ -100,9 +100,11 @@
 #'  grade limits.
 #'
 #' @return
-#' The Input data with the new severity records for Redness and swelling which
-#' is specified in `filter_faobj` and AVAL, AVALC will be derived and fatestcd,
-#'  fatest will be changed as per the values
+#' Dataset with the new severity records for specified event in 
+#' `filter_faobj`.AVAL, AVALC will be derived and FATESTCD,
+#'  FATEST will be assigned as per argument inputs.
+#'
+#' @author Arjun Rubalingam
 #'
 #' @examples
 #' library(dplyr)
