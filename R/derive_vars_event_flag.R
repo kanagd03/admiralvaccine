@@ -1,9 +1,8 @@
-#' Adds Flag Variables for an Occurred Event .
+#' Adds Flag Variables for an Occurred Event.
 #'
-#' Creates two flag variables for the event occurred,one for the event occurred
-#' within each by group and one and one to flag if the event occurred or not
+#' Creates two flag variables for the event occurred: one for the event occurred
+#' within each by group and another to flag if the event occurred or not
 #' for each day.
-#'
 #'
 #' @param dataset Input dataset
 #'
@@ -48,6 +47,7 @@
 #'  is not at all occurred during the observation period then all the
 #'  observations within by group will be flagged as "N".
 #'
+#' @author Vikram S
 #'
 #' @export
 #'
