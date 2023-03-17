@@ -1,6 +1,6 @@
 #' Creating Maximum Severity Records
 #'
-#' Creating the maximum severity records per subject per event per period.
+#' Creating the maximum severity records per subject per event per vaccination.
 #' Maximum severity records will be derived for the Administration and systemic
 #' events which has severity records `FATESTCD = "SEV"`.
 #'
@@ -48,13 +48,13 @@
 #' *Default: exprs(USUBJID, FAOBJ, ATPTREF)*
 #'
 #' Based on the variables which will be passed on this `by_vars` argument, The
-#' maximum severity records will be derived from AVAL.
+#' maximum severity records will be derived from AVAL
 #' *Note:* Pass the variables in `exprs()`.
 #'
 #' @return The input data set with new records `FATESTCD = MAXSEV`indicating the
 #' maximum severity records for the specified variables in `by_vars`. `DTYPE`
-#' will be populated as `MAXIMUM`. `FATEST`will be populated as specified in
-#' `test_maxsev`and `FATESCD` will be populated as specified in `testcd_maxsev`.
+#' will be populated as `MAXIMUM`. `FATEST` and `FATESCD` will be populated as 
+#' specified in `test_maxsev` and `testcd_maxsev`.
 #'
 #' @author Arjun Rubalingam
 #'
