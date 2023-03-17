@@ -1,7 +1,7 @@
 #' Adds records for the maximum diameter values within each by group to the
 #' output dataset.
 #'
-#' Creates maximum diameter record per subject per event per period.
+#' Creates maximum diameter record per subject per event per vaccination.
 #' Maximum diameter records will be derived for the Administration and systemic
 #' events which has diameter records.
 #'
@@ -52,7 +52,6 @@
 #' @details
 #'
 #' The maximum aval value of diameter within each group is filtered.
-#'
 #' if more than one record have same maximum values within by group then
 #' this function will take the first record from that group.
 #'
@@ -84,7 +83,7 @@
 #'   "2", "SWELLING", "VAC2", 1.5, "3.5", "Diameter", "DIAMETER", "ADMIN-SITE"
 #' )
 #'
-#' # Derive maximum diameter records for redness and swelling.
+#' Derive maximum diameter records for redness and swelling.
 #'
 #' derive_param_maxdiam(
 #'   dataset = input,
