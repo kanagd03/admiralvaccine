@@ -1,7 +1,7 @@
 #' Deriving maximum temperature record
 #'
 #' @description
-#' Create a summary record for maximum temperature per subject per period.
+#' Create a summary record for maximum temperature per subject per vaccination.
 #'
 #' @param dataset Input data set
 #'
@@ -21,7 +21,7 @@
 #' *Default: vars(USUBJID,FAOBJ,ATPTREF)*
 #' *Permitted Value: A Character vector*
 #'
-#'  Pass the `by_vars` in `vars()` based on the by_vars variables the maximum
+#'  Pass the `by_vars` in `exprs()` based on the by_vars variables the maximum
 #'  temperature will be derived from `VSSTRESN`.
 #'
 #' @param test_maxtemp Value for `FATEST`
@@ -43,6 +43,8 @@
 #' @return
 #' The input data set with derived records indicating the maximum temperature
 #' records.
+#'
+#' @author Arjun Rubalingam
 #'
 #' @export
 #'
