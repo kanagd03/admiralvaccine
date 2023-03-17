@@ -1,7 +1,8 @@
 #' Adds vaccination date variables to the output dataset.
 #'
-#' Creates vaccination date variables from ex domain.A date variable will be
-#' created for each vaccination taking values from the variable `EXSTDTC`.
+#' Creates vaccination date variables from `EX` domain. A date variable will be
+#' created for each vaccination taking values from the variable `EXSTDTC`
+#' of every `VISIT`.
 #'
 #' @param dataset Input dataset
 #'
@@ -22,7 +23,7 @@
 #'  By default ascending order will be applicable.
 #'
 #' @return the dataset with vaccination date variables which is created
-#' using `EXSTDTC`.
+#' using `EXSTDTC` of every `VISIT`.
 #'
 #' @author Vikram S
 #'
@@ -33,9 +34,7 @@
 #' on the `order` argument.
 #'
 #' The number of variables created will be based on the number of vaccinations
-#' per subject per visit.
-#'
-#' The output dataset will have one record per subject.
+#' per subject.
 #'
 #' @export
 #'
